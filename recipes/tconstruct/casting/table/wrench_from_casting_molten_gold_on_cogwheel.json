@@ -1,0 +1,12 @@
+{
+  "cast": {
+    "item": "create:cogwheel"
+  },
+  "cooling_time": 80,
+  "fluid": {
+    "amount": 270,
+    "fluid": "tconstruct:molten_gold"
+  },
+  "result": "create:wrench",
+  "type": "tconstruct:casting_table"
+}

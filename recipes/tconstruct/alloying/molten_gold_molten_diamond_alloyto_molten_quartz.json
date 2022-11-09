@@ -1,0 +1,18 @@
+{
+  "inputs": [
+    {
+      "amount": 90,
+      "fluid": "tconstruct:molten_gold"
+    },
+    {
+      "amount": 20,
+      "fluid": "tconstruct:molten_diamond"
+    }
+  ],
+  "result": {
+    "amount": 90,
+    "fluid": "tconstruct:molten_quartz"
+  },
+  "temperature": 1000,
+  "type": "tconstruct:alloy"
+}
