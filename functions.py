@@ -77,15 +77,7 @@ def ingots(n: int):
     return n * 90
 
 
-def aingots(n: int):
-    return n * 90
-
-
 def nuggets(n: int):
-    return n * 10
-
-
-def anuggets(n: int):
     return n * 10
 
 
@@ -105,7 +97,7 @@ def write_recipe(name: str, recipe: dict):
 
 def table(fluid: str, output: str, amount: int = 90, item: str = "minecraft:air", time: int = 80,
           basin_mode=False, tag=False, consume_cast=False):
-    name = f"recipes/tconstruct/casting/{'basin' if basin_mode else 'table'}/{output.split(':')[1].replace('/', '_')}_from_casting_{fluid.split(':')[1].replace('/', '_')}_on_{item.split(':')[1].replace('/', '_')}.json"
+    name = f"recipes/tconstruct/casting/{'basin' if basin_mode else 'table'}/{output.split(':')[1].replace('/', '_')}_from_casting_{fluid.split(':')[1].replace('/', '_')}_on_{item.split(':')[1].replace('/', '_')}.json "
     recipe = {
         "type": "tconstruct:casting_" + ("basin" if basin_mode else "table"),
         "cast": {
