@@ -1,121 +1,102 @@
-import os
-import json
+from functions import *
 
-os.makedirs("recipes", exist_ok=True)
-recipe_types = [
-    "tconstruct",
-    "tconstruct/casting",
-    "tconstruct/casting/table",
-    "tconstruct/casting/basin",
-    "tconstruct/melting",
-    "tconstruct/alloying",
-    "create",
-    "create/mixing",
-    "create/milling",
-    "create/crushing",
-    "create/pressing",
-    "create/mixing",
-    "create/compacting",
-    "create/filling",
-    "create/draining",
-]
-mgold = "tconstruct:molten_gold"
-miron = "tconstruct:molten_iron"
-for recipe_type in recipe_types:
-    y = "recipes/" + recipe_type
-    os.makedirs(y, exist_ok=True)
-
-
-def c(msg):
-    return "create:" + msg
-
-
-def t(msg):
-    return "tconstruct:" + msg
-
-
-def tm(msg):
-    return "tconstruct:molten_" + msg
-
-
-def ingots(n: int):
-    return n * 90
-
-
-def nuggets(n: int):
-    return n * 10
-
-
-def ingots_nuggets(ingot: int, nugget: int):
-    return ingot * 90 + nugget * 10
-
-
-def write_recipe(name: str, recipe: dict):
-    x = open(name, "w")
-    x.write(json.dumps(recipe, sort_keys=True, indent=2))
-    x.close()
-
-
-def table(fluid: str, output: str, amount: int = 90, item: str = "minecraft:air", cooling_time: int = 80,
-          basin_mode=False):
-    name = f"recipes/tconstruct/casting/table/{output.split(':')[1]}_from_casting_{fluid.split(':')[1]}_on_" \
-           f"{item.split(':')[1]}.json"
-    recipe = {
-        "type": "tconstruct:casting_" + ("basin" if basin_mode else "table"),
-        "cast": {
-            "item": item
-        },
-        "fluid": {
-            "fluid": fluid,
-            "amount": amount
-        },
-        "result": output,
-        "cooling_time": cooling_time
-    }
-    write_recipe(name, recipe)
-
-
-def basin(fluid: str, output: str, amount: int, item: str = "minecraft:air", cooling_time: int = 80):
-    table(fluid, output, amount, item, cooling_time, True)
-
-
-def melt(item: str, fluid: str, amount: int, time: int, temp: int = 1000):
-    name = f"recipes/tconstruct/melting/melting_{item.split(':')[1]}.json"
-    recipe = {
-        "type": "tconstruct:melting",
-        "ingredient": {
-            "item": item
-        },
-        "result": {
-            "fluid": fluid,
-            "amount": amount
-        },
-        "temperature": temp,
-        "time": time
-    }
-    write_recipe(name, recipe)
-
-
-def alloy(fluids: list, amounts: list, output: str, amount: int, temp=1000):
-    recipe = {
-        "type": "tconstruct:alloy",
-        "inputs": [],
-        "result": {
-            "fluid": output,
-            "amount": amount
-        },
-        "temperature": temp
-    }
-    for i in range(len(fluids)):
-        recipe["inputs"].append({"fluid": fluids[i], "amount": amounts[i]})
-    fluids_str = fluids[0].split(":")[1]
-    fluids.pop(0)
-    for fluid in fluids:
-        fluids_str += "_" + fluid.split(":")[1]
-    name = f"recipes/tconstruct/alloying/{fluids_str}_alloyto_{output.split(':')[1]}.json"
-    write_recipe(name, recipe)
-
+init()
 
 table(mgold, c("wrench"), ingots(3), c("cogwheel"))
-melt(c("wrench"), mgold, ingots(3), 120)
-alloy(["tconstruct:molten_gold", "tconstruct:molten_diamond"], [90, 20], "tconstruct:molten_quartz", 90)
+table(maa, c("andesite_alloy"), aingots(1), "tconstruct:ingot_cast")
+table(maa, "econstruct:andesite_alloy_nugget", anuggets(1), "tconstruct:nugget_cast", time=5)
+basin(maa, "econstruct:andesite_alloy_block", aingots(9), cooling_time=140)
+basin(ma, "minecraft:andesite", ingots(9), cooling_time=120)
+
+melt(c("wrench"), mgold, ingots(3))
+
+melt(c("filter"), miron, nuggets(2))
+melt(c("mechanical_saw"), miron, ingots(4))
+melt(c("mechanical_plough"), miron, ingots(3), byproducts=[maa], amounts=[aingots(4)])
+melt(c("mechanical_harvester"), miron, ingots(2), byproducts=[maa], amounts=[aingots(5)])
+melt(c("minecart_coupling"), miron, ingots(1), byproducts=[maa], amounts=[aingots(2)])
+melt(c("rope_pulley"), miron, ingots(1), byproducts=[maa], amounts=[aingots(1)])
+melt(c("propeller"), miron, ingots(4), byproducts=[maa], amounts=[aingots(1)])
+melt(c("whisk"), miron, ingots(5), byproducts=[maa], amounts=[aingots(2)])
+melt(c("empty_blaze_burner"), miron, ingots(4))
+melt(c("blaze_burner"), miron, ingots(4))
+melt(c("fluid_valve"), miron, ingots(1))
+melt(c("electron_tube"), miron, ingots(1))
+melt(c("redstone_contact"), miron, 45)
+melt(c("item_vault"), miron, ingots(2))
+melt(c("schematicannon"), miron, ingots(18), time=45 * 25)
+melt(c("metal_bracket"), miron, nuggets(10))
+
+melt(c("attribute_filter"), mbrass, nuggets(2))
+melt(c("smart_chute"), mbrass, ingots(1))
+melt(c("peculiar_bell"), mbrass, ingots(10), time=45 * 20)
+melt(c("flywheel"), mbrass, ingots(8), time=45 * 15)
+melt(c("haunted_bell"), mbrass, ingots(10), time=45 * 20)
+melt(c("deployer"), mbrass, ingots(4))
+melt(c("mechanical_arm"), mbrass, ingots(4))
+melt(c("smart_fluid_pipe"), mbrass, ingots(1))
+melt(c("pulse_repeater"), mbrass, ingots(1))
+melt(c("train_door"), mbrass, ingots(1))
+melt(c("train_trapdoor"), mbrass, ingots(1))
+melt(c("pulse_extender"), mbrass, ingots(1))
+melt(c("placard"), mbrass, ingots(1))
+melt(c("brass_tunnel"), mbrass, ingots(1))
+melt(c("brass_funnel"), mbrass, 45)
+
+melt(c("bar_of_chocolate"), "create:chocolate", 250)
+table(maa, c("bar_of_chocolate"), 250, "tconstruct:ingot_cast", time=20)
+table(maa, c("chocolate_glazed_berries"), 250, "minecraft:sweet_berries", time=20, consume_cast=True)
+
+melt("create:rose_quartz_lamp", mzinc, ingots(1))
+
+melt("create:valve_handles", mcopper, ingots(3), byproducts=[maa], amounts=[aingots(1)], tag=True)
+melt("create:steam_engine", mcopper, ingots(9), byproducts=[maa, mgold], amounts=[aingots(1), ingots(1)])
+melt("create:steam_whistle", mcopper, ingots(1), byproducts=[mgold], amounts=[ingots(1)])
+melt("create:display_link", mcopper, ingots(1))
+melt("create:copper_casing", mcopper, ingots(1))
+melt("create:spout", mcopper, ingots(1))
+melt("create:portable_fluid_interface", mcopper, ingots(1))
+melt("create:fluid_tank", mcopper, ingots(2))
+melt("create:hose_pulley", mcopper, ingots(2))
+melt("create:copper_backtank", mcopper, ingots(12), byproducts=[maa], amounts=[ingots(2)])
+melt("create:item_drain", mcopper, ingots(1), byproducts=[miron], amounts=[nuggets(3)])
+melt(c("copper_tiles"), mcopper, 45)
+melt(c("copper_shingles"), mcopper, 45)
+
+melt("minecraft:andesite", ma, 100)
+melt("minecraft:andesite_slab", ma, 50)
+melt("minecraft:andesite_stairs", ma, 100)
+melt("minecraft:polished_andesite", ma, 100)
+melt("minecraft:polished_andesite_slab", ma, 50)
+melt("minecraft:andesite_stairs", ma, 100)
+melt("minecraft:andesite_wall", ma, 100)
+melt("create:stone_types/andesite", ma, 100, tag=True)
+
+melt(c("brass_ladder"), mbrass, 45)
+melt(c("copper_ladder"), mcopper, 45)
+
+melt("create:display_board", maa, aingots(1))
+melt("create:andesite_alloy", maa, aingots(1))
+melt("create:depot", maa, aingots(2))
+melt("create:cart_assembler", maa, aingots(2))
+melt("create:mechanical_piston", maa, aingots(1))
+melt("create:basin", maa, aingots(5))
+melt("create:sticky_mechanical_piston", maa, aingots(1))
+melt("create:andesite_alloy", maa, aingots(1))
+melt("econstruct:andesite_alloy_block", maa, aingots(9), time=800)
+melt("econstruct:andesite_alloy_nugget", maa, anuggets(1))
+melt("create:mechanical_drill", maa, aingots(3), byproducts=[miron], amounts=[aingots(1)])
+melt(c("sticker"), maa, aingots(2))
+melt(c("nozzle"), maa, aingots(4))
+melt(c("linear_chassis"), maa, aingots(1) * 2 / 3)
+melt(c("secondary_linear_chassis"), maa, aingots(1) * 2 / 3)
+melt(c("radial_chassis"), maa, aingots(1) * 2 / 3)
+melt(c("andesite_tunnel"), maa, aingots(1))
+melt(c("andesite_funnel"), maa, 45)
+melt(c("white_sail"), maa, 45)
+
+for x in crushed_ores_with_corresponding_molten_metals:
+    melt(f"create:crushed_{x}_ore", f"tconstruct:molten_{x}", ingots(1))
+
+alloy([ma, miron], [100, 10], maa, 90)
+alloy([ma, mzinc], [100, 10], maa, 90)
